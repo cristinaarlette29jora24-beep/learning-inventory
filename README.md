@@ -1,57 +1,116 @@
-Markdown
-# 📦 Inventario de Aprendizaje - Fase 6
+# 📦 Inventario de Aprendizaje — Fase 6
 
-Proyecto full-stack desarrollado con **Next.js** y **React**, integrado con una base de datos relacional **PostgreSQL** serverless alojada en **Neon DB** y desplegado en **Vercel**. El objetivo principal de esta fase es el modelado robusto de datos, la persistencia segura y la mitigación de vulnerabilidades críticas como la inyección SQL.
-
----
-
-## 🚀 Características del Proyecto
-
-- **Framework:** Next.js con App Router y soporte nativo para TypeScript.
-- **Base de Datos:** PostgreSQL en la nube (Neon DB) con arquitectura serverless y branching de datos.
-- **Seguridad Avanzada:** Capa de persistencia blindada mediante el uso exclusivo de **consultas parametrizadas** (parámetros preparados).
-- **Integridad Referencial:** Relaciones estrictas entre entidades utilizando claves primarias UUID y restricciones operativas seguras (`ON DELETE RESTRICT`).
+> Proyecto full-stack desarrollado como parte del ciclo formativo **ASIR** en CEAC Valencia.  
+> Stack: **Next.js · PostgreSQL · Neon DB · Vercel**
 
 ---
 
-## 📂 Estructura de la Fase 6
+## 📌 Descripción
 
-El proyecto incluye dos carpetas fundamentales requeridas para la auditoría técnica de esta fase:
-
-### 1. Carpeta `sql/` (Scripts de Base de Datos)
-Contiene las instrucciones estructuradas para el motor PostgreSQL:
-- `schema.sql`: Definición del Modelo Entidad-Relación (tablas `categories` y `products`) utilizando restricciones `UNIQUE`, `CHECK` y tipos de datos de alta precisión como `NUMERIC` y `UUID`.
-- `seed.sql`: Script de población inicial con datos de prueba reales, simulaciones de transacciones de inventario (actualización de stock) y pruebas de borrado controlado.
-
-### 2. Carpeta `docs/` (Documentación Técnica Avanzada)
-Auditoría y análisis detallado sobre el comportamiento del sistema:
-- `arquitectura-datos.md`: Justificación del modelo relacional y análisis de seguridad entre la eliminación en cascada (`CASCADE`) frente a la restricción selectiva (`RESTRICT`).
-- `analisis-sql.md`: Demostración práctica de consultas complejas utilizando `INNER JOIN` frente a `LEFT JOIN`, y analíticas grupales con `GROUP BY` y funciones agregadas (`COUNT`).
-- `seguridad-db.md`: Estudio e ingeniería inversa sobre cómo se produce una vulnerabilidad de Inyección SQL y cómo la neutralizamos usando parámetros preparados en Node/Next.js.
+Aplicación de inventario de productos construida desde cero con una base de datos relacional **PostgreSQL serverless** alojada en **Neon DB**. El proyecto cubre el ciclo completo: modelado de datos, consultas SQL avanzadas, integración segura en backend y despliegue en producción.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 🚀 Demo en producción
 
-- **Frontend & Backend:** Next.js, React, Tailwind CSS, TypeScript.
-- **Base de Datos & Driver:** PostgreSQL, Neon DB, `@neondatabase/serverless`.
-- **Despliegue:** Vercel (Integración continua conectada al repositorio de GitHub).
+🔗 [Ver aplicación en Vercel](https://learning-inventory-wzdq.vercel.app)
 
 ---
 
-## 🔒 Variables de Entorno
+## 🛠️ Tecnologías
 
-Para que el proyecto funcione localmente, es indispensable configurar las credenciales maestras en un archivo `.env.local` (el cual se encuentra protegido e ignorado en el `.gitignore` por motivos de seguridad):
+| Capa | Tecnología |
+|---|---|
+| Frontend | Next.js 16, React, TypeScript |
+| Backend | Next.js API Routes |
+| Base de datos | PostgreSQL 17 (Neon DB serverless) |
+| Driver | `@neondatabase/serverless` |
+| Despliegue | Vercel |
+| Control de versiones | Git + GitHub |
 
-```env
-DATABASE_URL=postgres://tu_usuario:tu_contraseña@tu_host.neon.tech/learning-inventory?sslmode=require
-💡 Ventajas de la Abstracción con ORMs (Drizzle / Prisma)
-Nota de investigación integrada: Aunque escribir SQL puro (sql/) es vital para entender los cimientos de los motores relacionales y optimizar el rendimiento de las consultas, en entornos de producción a gran escala se suele incorporar un ORM (como Drizzle ORM o Prisma).
+---
 
-Las principales ventajas que aportan al flujo de desarrollo son:
+## 📂 Estructura del proyecto
+learning-inventory/
+├── app/
+│   ├── api/
+│   │   └── products/
+│   │       └── route.ts      # Endpoints GET y POST
+│   ├── lib/
+│   │   └── db.ts             # Conexión a Neon DB
+│   └── page.tsx              # Interfaz de usuario
+├── sql/
+│   ├── schema.sql            # Definición de tablas
+│   └── seed.sql              # Datos de prueba
+├── docs/
+│   ├── arquitectura-datos.md # Foreign keys y ON DELETE
+│   ├── analisis-sql.md       # INNER JOIN vs LEFT JOIN
+│   └── seguridad-db.md       # SQL Injection y parámetros preparados
+└── .env.local                # Variables de entorno (ignorado en git)
 
-Tipado de Extremo a Extremo (Type-Safety): Permiten definir el esquema de la base de datos directamente en TypeScript. Si cambias el nombre de una columna, el editor te marcará errores en todo el código antes de compilar, evitando fallos en producción.
+---
 
-Migraciones Automatizadas: El ORM detecta los cambios del código y genera los scripts SQL necesarios para actualizar la base de datos automáticamente, manteniendo la coherencia del equipo de desarrollo.
+## ⚙️ Instalación local
 
-Productividad: Abstrae la sintaxis compleja de SQL en funciones nativas del lenguaje (por ejemplo, .findMany()), manteniendo el código limpio, legible y protegido por defecto contra inyecciones de código.
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/cristinaarlette29jora24-beep/learning-inventory.git
+cd learning-inventory
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Configurar variables de entorno
+# Crea un archivo .env.local con:
+DATABASE_URL=postgresql://usuario:contraseña@host.neon.tech/neondb?sslmode=require
+
+# 4. Arrancar en local
+npm run dev
+```
+
+---
+
+## 🗄️ Base de datos
+
+El esquema incluye dos tablas relacionadas mediante **Foreign Key**:
+
+- **`categories`** — id (UUID), name (UNIQUE), description
+- **`products`** — id (UUID), name, price (CHECK > 0), stock, category_id (FK)
+
+La relación usa `ON DELETE RESTRICT` para proteger la integridad referencial: no se puede eliminar una categoría si tiene productos asociados.
+
+---
+
+## 🔒 Seguridad
+
+Todas las queries del backend usan **consultas parametrizadas** con el driver de Neon, separando los datos del usuario de la instrucción SQL y neutralizando cualquier intento de inyección SQL.
+
+```typescript
+// ✅ Seguro — parámetros separados
+const result = await sql`
+  INSERT INTO products (name, price, stock, category_id)
+  VALUES (${name}, ${price}, ${stock}, ${category_id})
+`;
+```
+
+---
+
+## 💡 Ventajas de usar un ORM tipado (Drizzle / Prisma)
+
+Aunque escribir SQL puro es fundamental para entender los cimientos de los motores relacionales, en proyectos grandes se suele incorporar un ORM como **Drizzle ORM** o **Prisma**.
+
+Sus principales ventajas son:
+
+- **Tipado de extremo a extremo:** El esquema se define en TypeScript. Si cambias una columna, el editor detecta errores antes de compilar.
+- **Migraciones automáticas:** El ORM genera los scripts SQL necesarios al detectar cambios en el código.
+- **Productividad:** Abstrae la sintaxis SQL en funciones nativas como `.findMany()`, manteniendo el código limpio y seguro por defecto.
+
+---
+
+## 📚 Documentación técnica
+
+| Archivo | Contenido |
+|---|---|
+| `docs/arquitectura-datos.md` | Explicación de Foreign Keys y ON DELETE CASCADE vs RESTRICT |
+| `docs/analisis-sql.md` | Diferencia entre INNER JOIN y LEFT JOIN con ejemplos reales |
+| `docs/seguridad-db.md` | SQL Injection: demostración y prevención con parámetros preparados |

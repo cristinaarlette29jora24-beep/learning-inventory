@@ -1,7 +1,7 @@
 # Arquitectura de Datos - Fase 6
 
 ## 1. Significado de `category_id` como Foreign Key (Clave Foránea)
-En nuestro modelo relacional, la columna `category_id` dentro de la tabla `products` actúa como una **Foreign Key (KF)** o clave foránea. Esto significa que establece un "enlace" o relación directa con la columna `id` (Primary Key) de la tabla `categories`. 
+En nuestro modelo relacional, la columna `category_id` dentro de la tabla `products` actúa como una **Foreign Key (FK)** o clave foránea. Esto significa que establece un "enlace" o relación directa con la columna `id` (Primary Key) de la tabla `categories`. 
 
 Técnicamente, su función es garantizar la **integridad referencial**. Esto asegura que:
 - No se pueda introducir un producto con un código de categoría que no exista previamente en la tabla de categorías.
